@@ -3,11 +3,11 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_themoviedb_assignment/core/utils/utils.dart';
-import 'package:flutter_themoviedb_assignment/feature/home/controller/home_controller.dart';
 import 'package:flutter_themoviedb_assignment/feature/person_details/controller/details_controller.dart';
 import 'package:flutter_themoviedb_assignment/feature/person_details/controller/profile_controller.dart';
 import 'package:flutter_themoviedb_assignment/feature/person_details/models/details.dart';
-import 'package:flutter_themoviedb_assignment/feature/person_details/models/person_profile.dart';
+import 'package:flutter_themoviedb_assignment/feature/person_image_details/view/image_view_screen.dart';
+import 'package:flutter_themoviedb_assignment/feature/person_image_details/view/image_view_screen.dart';
 import 'package:get/get.dart';
 
 class PersonDetailsScreen extends GetView<DetailsController> {
@@ -35,7 +35,8 @@ class PersonDetailsScreen extends GetView<DetailsController> {
         body: SingleChildScrollView(
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.start, children: [
               Center(
                 child: SizedBox(
                   height: 300,
@@ -45,13 +46,13 @@ class PersonDetailsScreen extends GetView<DetailsController> {
                     child: FadeInImage(
                       image: details.profilePath != null
                           ? NetworkImage(
-                          "${Utils.IMAGE_ORIGINAL_BASE_URL}${details.profilePath}")
+                              "${Utils.IMAGE_ORIGINAL_BASE_URL}${details.profilePath}")
                           : const AssetImage(
-                        'lib/assets/placeholderImg.png',
-                      ) as ImageProvider,
+                              'lib/assets/placeholderImg.png',
+                            ) as ImageProvider,
                       fit: BoxFit.cover,
                       placeholder:
-                      const AssetImage('lib/assets/placeholderImg.png'),
+                          const AssetImage('lib/assets/placeholderImg.png'),
                     ),
                   ),
                 ),
@@ -69,7 +70,7 @@ class PersonDetailsScreen extends GetView<DetailsController> {
                 children: [
                   const Text("Biography",
                       style:
-                      TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                   const SizedBox(
                     height: 10,
                   ),
@@ -80,30 +81,48 @@ class PersonDetailsScreen extends GetView<DetailsController> {
                 ],
               ),
               const SizedBox(height: 50),
-              SizedBox(
-                height: 200,
-                child: profileControl.obx((state) => ListView.builder(
-                  // physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    itemCount: profileControl.personsDetails.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Card(
-                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                          child: FadeInImage(
-                            height: 150,
-                            width: 150,
-                            image: state[index].filePath != null
-                                ? NetworkImage(
-                                "${Utils.IMAGE_500_BASE_URL}${state[index].filePath}")
-                                : const AssetImage(
-                              'lib/assets/placeholderImg.png',
-                            ) as ImageProvider,
-                            fit: BoxFit.cover,
-                            placeholder:
-                            const AssetImage('lib/assets/placeholderImg.png'),
-                          ));
-                    })),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text("Known For",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.start),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  SizedBox(
+                    height: 200,
+                    child: profileControl.obx((state) => ListView.builder(
+                        // physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        itemCount: profileControl.personsDetails.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return InkWell(
+                            onTap: () {
+                              Get.to(() => ImageViewScreen(
+                                  imagePath: state[index].filePath));
+                            },
+                            child: Card(
+                                clipBehavior: Clip.antiAliasWithSaveLayer,
+                                child: FadeInImage(
+                                  height: 150,
+                                  width: 150,
+                                  image: state[index].filePath != null
+                                      ? NetworkImage(
+                                          "${Utils.IMAGE_500_BASE_URL}${state[index].filePath}")
+                                      : const AssetImage(
+                                          'lib/assets/placeholderImg.png',
+                                        ) as ImageProvider,
+                                  fit: BoxFit.cover,
+                                  placeholder: const AssetImage(
+                                      'lib/assets/placeholderImg.png'),
+                                )),
+                          );
+                        })),
+                  )
+                ],
               )
             ]),
           ),
